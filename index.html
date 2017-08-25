@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>获取数据</title>
+</head>
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css">
+<style>
+    *{
+        padding:0px;
+        margin:0px;
+    }
+    .classContainer{
+        width:100%;
+        height:100%;
+        margin-top:70px;
+    }
+    .classesTitle{
+        display:block;
+        overflow:hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    img{
+
+        width:100%;
+        height:100%;
+    }
+    .bottomBtn{
+        width:100%;
+        height:40px;
+        text-align: center;
+        line-height: 40px;
+        background:rgba(245, 15, 15, 0.75);
+        color:white;
+        position:relative;
+        bottom:0px;
+        left:0px;
+        font-size: 20px;
+        cursor: pointer;
+        transition-duration:0.7s;
+        font-family: "隶书";
+    }
+    .bottomBtn:hover{
+        background: #32ff6b;
+    }
+    .subtitle{
+        display: block;
+        height:50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #navbar{
+        float: right;
+
+    }
+    #navbar .user{
+
+    }
+    .user a{
+        display: inline-block;
+        background:red;
+    }
+    #navbar .login{
+
+    }
+
+
+</style>
+<body>
+  <div class="box">
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container">
+              <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand navbar-left" href="#">慕课网</a>
+              </div>
+              <div id="navbar" class="navbar-collapse collapse navbar-right">
+                  <ul class="nav navbar-nav ">
+                      <li class="active"><a href="#">Home</a></li>
+                      <li><a href="#about">About</a></li>
+                      <li><a href="#contact">Contact</a></li>
+                      <li><a href="#about">About</a></li>
+                      <li><a href="#contact">Contact</a></li>
+                      <!--<li>-->
+                          <!--<form class="navbar-form navbar-right">-->
+                              <!--<div class="form-group">-->
+                                  <!--<input type="text" placeholder="Search..." class="form-control">-->
+                              <!--</div>-->
+                              <!--<button type="submit" class="btn btn-success">Search</button>-->
+                          <!--</form>-->
+                      <!--</li>-->
+                  </ul>
+              </div>
+          </div>
+      </nav>
+     <div class="container classContainer">
+         <div class="row">
+
+         </div>
+
+     </div>
+      <div class="bottomBtn">
+          更多...
+      </div>
+  </div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+<script>
+    $(document).ready(function(){
+        let currentPage=1;
+        function getData(currentPage){
+            $.ajax({
+                url:'http://imoocnote.calfnote.com/inter/getClasses.php?curPage='+currentPage,
+                dataType:'json',
+                type:'get',
+                success:function(result){
+                    var data=result.data;
+                    var htmlStr="";
+                    if(data.length===0){
+                        clearInterval(clearLoad);
+                    }
+                    for(var i=0;i<data.length;i++){
+                        htmlStr +=`<div class="col-xs-6 col-md-2 imgBox"><a href="#" class="thumbnail"><img src="${data[i].image}" title="${data[i].title}"></a>
+                   <div class="caption">
+        <h3 class="classesTitle">${data[i].title}</h3>
+        <p class="subtitle">${data[i].subtitle}</p>
+        <p class="time">时长:${data[i].timespan}</p>
+        <p><a href="#" class="btn btn-success" role="button">查看</a> <a href="#" class="btn btn-danger" role="button">收藏</a></p>
+      </div>
+                   </div>`
+                    }
+                    console.log(data);//输出的课程
+                    $('.row').append(htmlStr)
+                },
+                error:function(error){
+                    console.log(error);
+                }
+            });
+        }
+        //begin data
+        for(let i=1;i<5;i++){
+            getData(i);
+            currentPage=i;
+        }
+//        var clearLoad=setInterval(()=>{
+//            let index=0;
+//            for(let j=currentPage+1;j<currentPage+5;j++){
+//                getData(j);
+//                index=j;
+//            }
+//            currentPage=index;
+//        },1000)
+        $('.bottomBtn').on('click',()=>{
+            let index=0;
+            for(let j=currentPage+1;j<currentPage+5;j++){
+                getData(j);
+                index=j;
+            }
+            currentPage=index;
+        });
+    });
+</script>
+</html>
